@@ -209,8 +209,6 @@ export default {
 
 	methods: {
 		setParamsOnTarget(target) {
-			target.classList.add('trigger');
-			target.style.display = 'inline-block';
 			target.setAttribute('aria-describedby', this.popoverId)
 		},
 

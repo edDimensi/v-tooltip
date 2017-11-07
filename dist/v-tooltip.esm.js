@@ -3686,8 +3686,6 @@ var Popover = { render: function render() {
 
 	methods: {
 		setParamsOnTarget: function setParamsOnTarget(target) {
-			target.classList.add('trigger');
-			target.style.display = 'inline-block';
 			target.setAttribute('aria-describedby', this.popoverId);
 		},
 		currentTarget: function currentTarget() {
