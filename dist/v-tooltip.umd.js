@@ -3553,6 +3553,10 @@ var Popover = { render: function render() {
 				return getDefault('defaultContainer');
 			}
 		},
+		target: {
+			type: HTMLElement,
+			default: null
+		},
 		boundariesElement: {
 			type: Element,
 			default: function _default() {
@@ -3659,6 +3663,14 @@ var Popover = { render: function render() {
 		popperOptions: {
 			handler: '$_restartPopper',
 			deep: true
+		},
+
+		popoverId: function popoverId(id) {
+			if (!this.target) {
+				return;
+			}
+
+			target.setAttribute('aria-describedby', id);
 		}
 	},
 
@@ -3679,10 +3691,27 @@ var Popover = { render: function render() {
 
 
 	methods: {
+		setParamsOnTarget: function setParamsOnTarget(target) {
+			target.classList.add('trigger');
+			target.style.display = 'inline-block';
+			target.setAttribute('aria-describedby', this.popoverId);
+		},
+		currentTarget: function currentTarget() {
+			if (!this.target || !this.$refs.trigger) {
+				return null;
+			}
+
+			if (this.target) {
+				this.setParamsOnTarget(this.target);
+				return this.target;
+			}
+
+			return this.$refs.trigger;
+		},
 		show: function show() {
 			var _this3 = this;
 
-			var reference = this.$refs.trigger;
+			var reference = this.currentTarget();
 			var popoverNode = this.$refs.popover;
 
 			clearTimeout(this.$_disposeTimer);
@@ -3835,7 +3864,7 @@ var Popover = { render: function render() {
 		$_addEventListeners: function $_addEventListeners() {
 			var _this5 = this;
 
-			var reference = this.$refs.trigger;
+			var reference = this.currentTarget();
 			var directEvents = [];
 			var oppositeEvents = [];
 
@@ -3920,7 +3949,7 @@ var Popover = { render: function render() {
 		$_setTooltipNodeEvent: function $_setTooltipNodeEvent(evt) {
 			var _this7 = this;
 
-			var reference = this.$refs.trigger;
+			var reference = this.currentTarget();
 			var popoverNode = this.$refs.popover;
 
 			var relatedreference = evt.relatedreference || evt.toElement;
@@ -3947,7 +3976,7 @@ var Popover = { render: function render() {
 			return false;
 		},
 		$_removeEventListeners: function $_removeEventListeners() {
-			var reference = this.$refs.trigger;
+			var reference = this.currentTarget();
 			this.$_events.forEach(function (_ref) {
 				var func = _ref.func,
 				    event = _ref.event;

@@ -80,6 +80,10 @@ export default {
 			type: [String, Object, Element],
 			default: () => getDefault('defaultContainer'),
 		},
+		target: {
+			type: HTMLElement,
+			default: null,
+		},
 		boundariesElement: {
 			type: Element,
 			default: () => getDefault('defaultBoundariesElement'),
@@ -176,6 +180,14 @@ export default {
 			handler: '$_restartPopper',
 			deep: true,
 		},
+
+		popoverId(id) {
+			if (!this.target) {
+				return;
+			}
+
+			target.setAttribute('aria-describedby', id)
+		}
 	},
 
 	created () {
@@ -196,8 +208,27 @@ export default {
 	},
 
 	methods: {
+		setParamsOnTarget(target) {
+			target.classList.add('trigger');
+			target.style.display = 'inline-block';
+			target.setAttribute('aria-describedby', this.popoverId)
+		},
+
+		currentTarget() {
+			if (!this.target || !this.$refs.trigger) {
+				return null;
+			}
+
+			if (this.target) {
+				this.setParamsOnTarget(this.target);
+				return this.target;
+			}
+
+			return this.$refs.trigger
+		},
+
 		show () {
-			const reference = this.$refs.trigger
+			const reference = this.currentTarget()
 			const popoverNode = this.$refs.popover
 
 			clearTimeout(this.$_disposeTimer)
@@ -354,7 +385,7 @@ export default {
 		},
 
 		$_addEventListeners () {
-			const reference = this.$refs.trigger
+			const reference = this.currentTarget()
 			const directEvents = []
 			const oppositeEvents = []
 
@@ -442,7 +473,7 @@ export default {
 		},
 
 		$_setTooltipNodeEvent (evt) {
-			const reference = this.$refs.trigger
+			const reference = this.currentTarget()
 			const popoverNode = this.$refs.popover
 
 			const relatedreference = evt.relatedreference || evt.toElement
@@ -470,7 +501,7 @@ export default {
 		},
 
 		$_removeEventListeners () {
-			const reference = this.$refs.trigger
+			const reference = this.currentTarget()
 			this.$_events.forEach(({ func, event }) => {
 				reference.removeEventListener(event, func)
 			})
