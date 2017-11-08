@@ -3510,7 +3510,7 @@ function getDefault(key) {
 var Popover = { render: function render() {
 		var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "v-popover", class: _vm.cssClass }, [_c('span', { ref: "trigger", staticClass: "trigger", staticStyle: { "display": "inline-block" }, attrs: { "aria-describedby": _vm.popoverId } }, [_vm._t("default")], 2), _vm._v(" "), _c('div', { ref: "popover", staticClass: "tooltip popover", class: [_vm.cssClass, _vm.popoverClass], style: {
 				display: _vm.isOpen ? '' : 'none'
-			}, attrs: { "id": _vm.popoverId, "aria-hidden": _vm.isOpen ? 'false' : 'true' } }, [_c('div', { ref: "arrow", staticClass: "tooltip-arrow popover-arrow" }), _vm._v(" "), _c('div', { ref: "inner", staticClass: "tooltip-inner popover-inner", staticStyle: { "position": "relative" } }, [_c('div', [_vm._t("popover")], 2), _vm._v(" "), _vm.handleResize ? _c('ResizeObserver', { on: { "notify": _vm.$_handleResize } }) : _vm._e()], 1)])]);
+			}, attrs: { "id": _vm.popoverId, "aria-hidden": _vm.isOpen ? 'false' : 'true' } }, [_c('div', { staticClass: "wrapper" }, [_c('div', { ref: "arrow", staticClass: "tooltip-arrow popover-arrow" }), _vm._v(" "), _c('div', { ref: "inner", staticClass: "tooltip-inner popover-inner", staticStyle: { "position": "relative" } }, [_c('div', [_vm._t("popover")], 2), _vm._v(" "), _vm.handleResize ? _c('ResizeObserver', { on: { "notify": _vm.$_handleResize } }) : _vm._e()], 1)])])]);
 	}, staticRenderFns: [],
 	name: 'VPopover',
 
@@ -3681,9 +3681,13 @@ var Popover = { render: function render() {
 	},
 	mounted: function mounted() {
 		var popoverNode = this.$refs.popover;
-		popoverNode.parentNode.removeChild(popoverNode);
+		popoverNode.parentNode && popoverNode.parentNode.removeChild(popoverNode);
 
 		this.$_init();
+
+		if (this.open) {
+			this.show();
+		}
 	},
 	beforeDestroy: function beforeDestroy() {
 		this.dispose();
@@ -3806,7 +3810,7 @@ var Popover = { render: function render() {
 					var popoverNode = _this4.$refs.popover;
 					if (popoverNode) {
 						// Don't remove popper instance, just the HTML element
-						popoverNode.parentNode.removeChild(popoverNode);
+						popoverNode.parentNode && popoverNode.parentNode.removeChild(popoverNode);
 						_this4.$_mounted = false;
 					}
 				}, disposeTime);
@@ -3826,7 +3830,7 @@ var Popover = { render: function render() {
 				// destroy tooltipNode if removeOnDestroy is not set, as popperInstance.destroy() already removes the element
 				if (!this.popperInstance.options.removeOnDestroy) {
 					var popoverNode = this.$refs.popover;
-					popoverNode.parentNode.removeChild(popoverNode);
+					popoverNode.parentNode && popoverNode.parentNode.removeChild(popoverNode);
 				}
 			}
 			this.$_mounted = false;
