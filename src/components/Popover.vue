@@ -19,17 +19,19 @@
 			}"
 			:aria-hidden="isOpen ? 'false' : 'true'"
 		>
-			<div ref="arrow" class="tooltip-arrow popover-arrow"></div>
-			<div
-				ref="inner"
-				class="tooltip-inner popover-inner"
-				style="position: relative;"
-			>
-				<div>
-					<slot name="popover" />
-				</div>
+			<div class="wrapper">
+				<div ref="arrow" class="tooltip-arrow popover-arrow"></div>
+				<div
+					ref="inner"
+					class="tooltip-inner popover-inner"
+					style="position: relative;"
+				>
+					<div>
+						<slot name="popover" />
+					</div>
 
-				<ResizeObserver v-if="handleResize" @notify="$_handleResize" />
+					<ResizeObserver v-if="handleResize" @notify="$_handleResize" />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -198,9 +200,13 @@ export default {
 
 	mounted () {
 		const popoverNode = this.$refs.popover
-		popoverNode.parentNode.removeChild(popoverNode)
+		popoverNode.parentNode && popoverNode.parentNode.removeChild(popoverNode)
 
 		this.$_init()
+
+		if (this.open) {
+			this.show()
+		}
 	},
 
 	beforeDestroy () {
@@ -324,7 +330,7 @@ export default {
 					const popoverNode = this.$refs.popover
 					if (popoverNode) {
 						// Don't remove popper instance, just the HTML element
-						popoverNode.parentNode.removeChild(popoverNode)
+						popoverNode.parentNode && popoverNode.parentNode.removeChild(popoverNode)
 						this.$_mounted = false
 					}
 				}, disposeTime)
@@ -345,7 +351,7 @@ export default {
 				// destroy tooltipNode if removeOnDestroy is not set, as popperInstance.destroy() already removes the element
 				if (!this.popperInstance.options.removeOnDestroy) {
 					const popoverNode = this.$refs.popover
-					popoverNode.parentNode.removeChild(popoverNode)
+					popoverNode.parentNode && popoverNode.parentNode.removeChild(popoverNode)
 				}
 			}
 			this.$_mounted = false
